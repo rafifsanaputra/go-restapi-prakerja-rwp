@@ -1,0 +1,111 @@
+package main
+
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+)
+
+type Guitar struct {
+	ID          int     `json:"id"`
+	Brand       string  `json:"brand"`
+	Model       string  `json:"model"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
+	Quantity    int     `json:"quantity"`
+}
+
+var guitars = []Guitar{
+	{
+		ID:          1,
+		Brand:       "Fender",
+		Model:       "Stratocaster",
+		Description: "Gitar listrik klasik dengan karakter suara yang versatile.",
+		Price:       14999000,
+		Quantity:    3,
+	},
+	{
+		ID:          2,
+		Brand:       "Gibson",
+		Model:       "Les Paul",
+		Description: "Gitar listrik ikonik dengan karakter suara hangat dan mewah.",
+		Price:       49999000,
+		Quantity:    2,
+	},
+	{
+		ID:          3,
+		Brand:       "Ibanez",
+		Model:       "RG550",
+		Description: "Gitar listrik high-performance yang dirancang untuk shredder.",
+		Price:       12999000,
+		Quantity:    5,
+	},
+	{
+		ID:          4,
+		Brand:       "Taylor",
+		Model:       "814ce",
+		Description: "Gitar akustik-elektrik dengan karakter suara seimbang dan serbaguna.",
+		Price:       29999000,
+		Quantity:    1,
+	},
+	{
+		ID:          5,
+		Brand:       "PRS",
+		Model:       "Custom 24",
+		Description: "Gitar listrik elegan dengan rentang karakter suara yang luas.",
+		Price:       25999000,
+		Quantity:    4,
+	},
+}
+
+// FUNCTION GET GUITARS
+func getGuitars(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, guitars)
+}
+
+// FUNCTION GET GUITAR BY ID
+func getGuitar(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	for _, guitar := range guitars {
+		if guitar.ID == id {
+			c.IndentedJSON(http.StatusOK, guitar)
+			return
+		}
+	}
+
+	c.JSON(http.StatusNotFound, gin.H{"error": "Guitar not found"})
+}
+
+// FUNCTION ADD GUITAR
+func createGuitar(c *gin.Context) {
+	var newGuitar Guitar
+
+	// Bind the request body to the newGuitar struct and error handling
+	if err := c.BindJSON(&newGuitar); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Generate ID for the new guitar
+	lastGuitar := guitars[len(guitars)-1] // Get the last guitar in the dataset
+	newID := lastGuitar.ID + 1            // Increment the last ID
+	newGuitar.ID = newID
+
+	// Add the guitar
+	guitars = append(guitars, newGuitar)
+	c.IndentedJSON(http.StatusCreated, newGuitar)
+}
+
+func main() {
+	router := gin.Default()
+	router.GET("/guitars", getGuitars)
+	router.GET("/guitars/:id", getGuitar)
+	router.POST("/guitars", createGuitar)
+	router.Run("localhost:8080")
+}
