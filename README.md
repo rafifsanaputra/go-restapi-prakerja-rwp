@@ -25,24 +25,28 @@ To use the project, follow the instructions below:
 
 1. Install Go and MySQL on your machine.
 2. Clone the repository:
-   git clone https://github.com/rafifsanaputra/go-restapi-prakerja-rwp.git
+  ```shell
+  git clone https://github.com/rafifsanaputra/go-restapi-prakerja-rwp.git
 3. Set up your MySQL database and update the connection details in the code.
 
 4. Run the application:
-go run main.go
+  ```shell
+  go run main.go
 5. Access the API endpoints using an HTTP client or web browser.
 For POST /api/guitar and PUT /api/guitar/:id endpoints, you can send raw JSON data in the request body to create or update a guitar. The JSON data should have the following structure:
 For creating a new guitar (POST /api/guitar):
-{
-  "brand": "Fender",
-  "model": "Stratocaster",
-  "description": "A classic electric guitar known for its versatile sound."
-}
+  ```json
+  {
+    "brand": "Fender",
+    "model": "Stratocaster",
+    "description": "A classic electric guitar known for its versatile sound."
+  }
 For updating an existing guitar (PUT /api/guitar/:id):
-{
-  "brand": "Gibson",
-  "model": "Les Paul",
-  "description": "A solid-body electric guitar with a warm tone."
-}
+  ```json
+  {
+    "brand": "Gibson",
+    "model": "Les Paul",
+    "description": "A solid-body electric guitar with a warm tone."
+  }
 Please note that you can customize the values of the brand, model, and description fields according to your specific requirements.
 Make sure to include the appropriate Content-Type header in your request (e.g., application/json) when sending the raw JSON data to the mentioned endpoints.
